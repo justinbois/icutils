@@ -1429,7 +1429,7 @@ packages:
 - pypi: ./
   name: icutils
   version: 0.1.1
-  sha256: cdf51f0ab318943a52d9b7d7a4a159ccea2d984bf8b3aed3003d32ffcf6aafb6
+  sha256: 2311bc856fb94f0f81507953834d95127adfcb19efd0577666b0aa60e3821185
   requires_dist:
   - iqplot>=0.3.7,<0.4
   requires_python: '>=3.11'

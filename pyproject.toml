@@ -9,6 +9,12 @@ dependencies = ["iqplot>=0.3.7,<0.4"]
 build-backend = "hatchling.build"
 requires = ["hatchling"]
 
+[tool.setuptools.package-data]
+icutils = ["data/*"]
+
+[project.scripts]
+icutils = "icutils.cli:cli"
+
 [tool.pixi.workspace]
 channels = ["conda-forge"]
 platforms = ["osx-arm64"]

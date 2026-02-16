@@ -1,0 +1,15 @@
+course = 'Integrated Core'
+term = 'Winter'
+year = '2026'
+number = '2c'
+due_time = '11:59 PST, Friday, January 16, 2026'
+
+include_time_to_completion_problem = true
+
+[[problem]]
+name = 'rain_cloud_distance'
+points = 20
+
+[[problem]]
+name = 'space_curves_and_dna'
+points = 80

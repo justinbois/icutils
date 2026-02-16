@@ -17,6 +17,7 @@ def subject_scores(
     homework_weight: typing.Union[float, int] = 0.4,
     midterm_weight: typing.Union[float, int] = 0.2,
     final_weight: typing.Union[float, int] = 0.3,
+    rfp_weight: typing.Union[float, int] = 0.0,
     engagement_weight: typing.Union[float, int] = 0.2,
     engagement_weeks: int = 10,
 ):
@@ -43,6 +44,8 @@ def subject_scores(
         Weight to assign midterm exam percentage in final grade.
     final_weight : float, default 0.3
         Weight to assign final exam percentage in final grade.
+    rfp_weight : float, default 0.0
+        Weight to assign research funding proposal
     engagement_weight : float, default 0.3
         Weight to assign engagement percentage in final grade.
     engagement_weeks : int, default 10
@@ -58,6 +61,7 @@ def subject_scores(
             - homework: Homework percentage.
             - midterm: Midterm exam percentage.
             - final: Final exam percentage.
+            - rfp: Research funding proposal percentage.
             - engagement: Engagement percentage
         Note that columns are missing if their respective weights are
         zero.
@@ -71,18 +75,26 @@ def subject_scores(
     if level not in (1, 2, 3):
         raise RuntimeError('Invalid level. Must be 1, 2, or 3.')
     
-    if term not in ('fall', 'winter', 'spring'):
-        raise RuntimeError("`term` must be  one of 'fall', 'winter', or 'spring'.")
+    if term not in ('fall', 'winter', 'spring', 'summer'):
+        raise RuntimeError(
+            "`term` must be  one of 'fall', 'winter', 'spring', or 'summer'."
+        )
 
     # Fill in dummy columns for missing ones
     if 'engagement' not in df['assignment_type']:
-        if engagement_weight > 0:
+        if engagement_weight > 0.0:
             raise RuntimeError(
                 'engagement_weight > 0, but there are no engagement grades.'
             )
 
+    if 'rfp' not in df['assignment_type']:
+        if rfp_weight > 0.0:
+            raise RuntimeError(
+                'rfp_weight > 0, but there are no rfp grades.'
+            )
+
     if 'homework' not in df['assignment_type']:
-        if homework_weight > 0:
+        if homework_weight > 0.0:
             raise RuntimeError(
                 'homework_weight > 0, but there are no homework grades.'
             )
@@ -113,6 +125,8 @@ def subject_scores(
             | (pl.col('subject 3') == subject)
         )
 
+    rfp_condition = pl.col('assignment_type') == 'rfp'
+
     engagement_condition = (
         (pl.col('assignment_type') == 'engagement')
         & (pl.col('assignment') <= 'week_{0:02d}'.format(engagement_weeks))
@@ -121,7 +135,7 @@ def subject_scores(
     filter_conditions = (
         (pl.col('term') == term)
         & (pl.col('counts toward grade'))
-        & (subject_condition | engagement_condition)
+        & (subject_condition | engagement_condition | rfp_condition)
     )
 
     percent_calculator = (
@@ -132,12 +146,13 @@ def subject_scores(
         homework_weight 
         + midterm_weight 
         + final_weight 
+        + rfp_weight
         + engagement_weight
     )    
     score_calculator = 0.0
     for weight, col in zip(
-        [homework_weight, midterm_weight, final_weight, engagement_weight],
-        ['homework', 'midterm', 'final', 'engagement']):
+        [homework_weight, midterm_weight, final_weight, rfp_weight, engagement_weight],
+        ['homework', 'midterm', 'final', 'rfp', 'engagement']):
         if weight > 0:
             score_calculator += weight * pl.col(col)
     score_calculator /= total_weight

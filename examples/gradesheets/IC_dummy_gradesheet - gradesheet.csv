@@ -649,3 +649,12 @@ spring,final3c,12,1,TRUE,biology,physics,,FALSE,2026-06-05,"thorrington, john",1
 spring,final3c,13,21,TRUE,chemistry,geology,math,FALSE,2026-06-05,"thorrington, john",18,21,17,19.5,18,14,17.5,13.5,18,14.5,19,18,16.5,19.5,16,13.5,13.5,15,14,20,18.5,18.5,16.5
 spring,final3c,14,7,TRUE,chemistry,math,biology,FALSE,2026-06-05,"razov, ante",6,6,5,5,6.5,5.5,5,4.5,6,5,5,6.5,5,4.5,6,5.5,5.5,6,5,7,4,6,5.5
 spring,final3c,15,2,TRUE,math,physics,,FALSE,2026-06-05,"dos santos, marc",1.5,2,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,2,1.5,1.5,2
+winter,rfp1,1,1,TRUE,,,,FALSE,2026-01-07,"dos santos, marc",1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1
+winter,rfp2,1,1,TRUE,,,,FALSE,2026-01-12,"dos santos, marc",1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1
+winter,rfp3,1,1,TRUE,,,,FALSE,2026-01-14,"dos santos, marc",1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+winter,rfp4,1,1,TRUE,,,,FALSE,2026-01-28,"dos santos, marc",1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+spring,rfp5,1,1,TRUE,,,,FALSE,2026-03-07,"dos santos, marc",1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1
+spring,rfp6,1,1,TRUE,,,,FALSE,2026-03-12,"dos santos, marc",1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1
+spring,rfp7,1,1,TRUE,,,,FALSE,2026-04-14,"dos santos, marc",1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+spring,rfp8,1,1,TRUE,,,,FALSE,2026-04-28,"dos santos, marc",1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+spring,rfp9,1,1,TRUE,,,,FALSE,2026-05-13,"dos santos, marc",1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1

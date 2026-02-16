@@ -2,7 +2,7 @@
 authors = [{name = "Justin Bois", email = "bois@caltech.edu"}]
 name = "icutils"
 requires-python = ">= 3.11"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = ["iqplot>=0.3.7,<0.4"]
 
 [build-system]

@@ -64,7 +64,7 @@ def wrangle(
             - assignment: Name of assignment, like '3a' for a homework,
               or 'midterm' for the midterm exam
             - assignment_type: Entries are 'homework', 'midterm', 
-              'final', and 'engagement'
+              'final', 'rfp', and 'engagement'
             - problem: Problem number
             - points: Number of points possible for the problem
             - counts toward grade: Entries are either True or False
@@ -172,6 +172,8 @@ def wrangle(
         .then(pl.lit("midterm"))
         .when(pl.col("assignment").str.contains("final"))
         .then(pl.lit("final"))
+        .when(pl.col("assignment").str.contains("rfp"))
+        .then(pl.lit("rfp"))
         .otherwise(pl.lit("homework"))
         .alias("assignment_type")
     )

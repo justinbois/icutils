@@ -31,6 +31,7 @@
 
 % Misc
 \RequirePackage{setspace}
+\RequirePackage{siunitx}
 \RequirePackage{textcomp} % (note: can clash with degree symbol depending on other packages)
 \RequirePackage{graphicx}
 \RequirePackage{url}
@@ -49,6 +50,9 @@
 \RequirePackage[colorlinks=true, urlcolor=blue, hyperfootnotes=false, hyperfigures=false, hyperindex=false, linkcolor=black]{hyperref}
 \RequirePackage[font=small, margin=1cm]{caption}
 \RequirePackage{float}
+
+% Chemistry!
+\RequirePackage{chemfig}
 
 % Tables
 \usepackage{hhline}

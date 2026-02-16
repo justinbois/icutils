@@ -56,7 +56,7 @@ def copy_cls(texmfhome=None, overwrite=True) -> None:
         shutil.copy2(cls, target)
 
 
-def pdfproblem(problem, problem_bank_path, overwrite=True):
+def pdfproblem(problem, problem_bank_path, overwrite=True, compiler='pdflatex'):
     """Compile a single problem to a PDF document."""
     # Just problem name, not .tex
     if problem.endswith(".tex"):
@@ -70,6 +70,9 @@ def pdfproblem(problem, problem_bank_path, overwrite=True):
 
     # Get figs directory
     figs_path = problem_bank_path.joinpath('figs')
+
+    # Get code directory
+    code_path = problem_bank_path.joinpath('code')
 
     # Path to the TeX file
     tex_file = problem_bank_path.joinpath(problem + '.tex')    
@@ -86,6 +89,7 @@ def pdfproblem(problem, problem_bank_path, overwrite=True):
 % when we compile.  Use \\excludecomment{answerkey} to hide solutions.
 \\includecomment{answerkey}
 \\includecomment{extracomment}
+\\excludecomment{answerspaces}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -113,6 +117,9 @@ def pdfproblem(problem, problem_bank_path, overwrite=True):
     # Substitute in full path of figures
     problem_text = problem_text.replace('{figs/', '{' + figs_path.as_posix() + '/')
 
+    # Substitute in full path of code
+    problem_text = problem_text.replace('{code/', '{' + code_path.as_posix() + '/')
+
     # Check for the output PDF
     pdf_file = pathlib.Path(problem + '.pdf')
 
@@ -129,7 +136,7 @@ def pdfproblem(problem, problem_bank_path, overwrite=True):
         # Compile twice in temporary directory
         for _ in range(2):
             subprocess.run(
-                ["pdflatex", "-interaction=nonstopmode", tmp_tex_file.name],
+                [compiler, "-interaction=nonstopmode", tmp_tex_file.name],
                 cwd=tmp,
                 check=True,
             )
@@ -182,7 +189,7 @@ def _add_points(problem_text, points):
     return problem_text[:idx] + f', {points} points]' + problem_text[idx+1:]
 
 
-def pdfset(toml_spec, problem_bank_path, overwrite=True):
+def pdfset(toml_spec, problem_bank_path, overwrite=True, compiler='pdflatex'):
     """Compile problems in a TOML specification into a PDF document."""
     # Load in specification and check it
     with open(toml_spec, 'rb') as f:
@@ -203,6 +210,9 @@ def pdfset(toml_spec, problem_bank_path, overwrite=True):
     # Get figs directory
     figs_path = problem_bank_path.joinpath('figs')
 
+    # Get code directory
+    code_path = problem_bank_path.joinpath('code')
+    
     preamble_text = """\\documentclass{integrated_core_problems}
     
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -211,6 +221,7 @@ def pdfset(toml_spec, problem_bank_path, overwrite=True):
 % when we compile.  Use \\excludecomment{answerkey} to hide solutions.
 \\includecomment{answerkey}
 \\includecomment{extracomment}
+\\excludecomment{answerspaces}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -279,6 +290,9 @@ Write down how many hours you spent working on this problem set.
     # Substitute in full path of figures
     problems_text = problems_text.replace('{figs/', '{' + figs_path.as_posix() + '/')
 
+    # Substitute in full path of code
+    problems_text = problems_text.replace('{code/', '{' + code_path.as_posix() + '/')
+
     # Prefix for homework files
     prefix = f"ic_set_{spec['number']}"
 
@@ -294,7 +308,7 @@ Write down how many hours you spent working on this problem set.
     # Compile twice
     for _ in range(2):
         subprocess.run(
-            ["pdflatex", "-interaction=nonstopmode", set_tex_file.name],
+            [compiler, "-interaction=nonstopmode", set_tex_file.name],
             check=True,
         )
 
@@ -305,6 +319,6 @@ Write down how many hours you spent working on this problem set.
     set_tex_file.write_text(tex_source.replace('includecomment', 'excludecomment'))
     for _ in range(2):
         subprocess.run(
-            ["pdflatex", "-interaction=nonstopmode", set_tex_file.name],
+            [compiler, "-interaction=nonstopmode", set_tex_file.name],
             check=True,
         )

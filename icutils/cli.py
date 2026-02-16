@@ -40,11 +40,18 @@ def resolve_problem_bank_path(flag_value: str | None) -> pathlib.Path:
     show_default=True,
     help="Overwrite existing output PDF in the current directory.",
 )
-def pdfproblem_cmd(problem: str, problem_bank_path: str, overwrite: bool) -> None:
+@click.option(
+    "--compiler",
+    default="pdflatex",
+    show_default=True,
+    type=click.Path(path_type=str),
+    help="Compiler to use in making PDF. E.g., pdflatex, xelatex, lualatex.",
+)
+def pdfproblem_cmd(problem: str, problem_bank_path: str, overwrite: bool, compiler: str) -> None:
     """Compile a single problem to a PDF in the current directory."""
     try:
         resolved_path = resolve_problem_bank_path(problem_bank_path)
-        pdfproblem(problem, resolved_path, overwrite=overwrite)
+        pdfproblem(problem, resolved_path, overwrite=overwrite, compiler=compiler)
     except Exception as e:
         if "does not exist." in str(e):
             raise click.ClickException(str(e) + " You may need to provide the problem bank path using the --problem-bank-path flag.") from e
@@ -67,11 +74,18 @@ def pdfproblem_cmd(problem: str, problem_bank_path: str, overwrite: bool) -> Non
     show_default=True,
     help="Overwrite existing output PDF in the current directory.",
 )
-def pdfset_cmd(toml_spec: str, problem_bank_path: str, overwrite: bool) -> None:
+@click.option(
+    "--compiler",
+    default="pdflatex",
+    show_default=True,
+    type=click.Path(path_type=str),
+    help="Compiler to use in making PDF. E.g., pdflatex, xelatex, lualatex.",
+)
+def pdfset_cmd(toml_spec: str, problem_bank_path: str, overwrite: bool, compiler: str) -> None:
     """Compile a single problem to a PDF in the current directory."""
     try:
         resolved_path = resolve_problem_bank_path(problem_bank_path)
-        pdfset(toml_spec, resolved_path, overwrite=overwrite)
+        pdfset(toml_spec, resolved_path, overwrite=overwrite, compiler=compiler)
     except Exception as e:
         if "does not exist." in str(e):
             raise click.ClickException(str(e) + " You may need to provide the problem bank path using the --problem-bank-path flag.") from e

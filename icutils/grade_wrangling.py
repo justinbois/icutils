@@ -14,6 +14,7 @@ def wrangle(
     df_software: str = 'polars',
     n_students: typing.Optional[int] = None,
     n_rows: typing.Optional[int] = None,
+    omit_students: typing.Optional[typing.Union[str, typing.List[str], typing.Tuple[str, ...]]] = None,
 ) -> typing.Union[pd.DataFrame, pl.DataFrame]:
     """Wrangle grading data into tall tidy format.
 
@@ -51,6 +52,8 @@ def wrangle(
         have added spurious rows to the gradesheet to do in-Google-
         Docs analysis, this will fail, possibly silently, unless 
         n_rows is explicitly set.
+    omit_student : list of str
+        List of students to be omitted from the analysis.
 
     Returns
     -------
@@ -72,6 +75,8 @@ def wrangle(
               possible entries as above. May be left blank.
             - subject 3: Tertiary subject of the assignment. Same
               possible entries as above. May be left blank.
+            - lab: True if the problem was associated with a lab and
+              False otherwise. null if unknown.
             - grader: Name of grade in format 'lastname, firstname'. 
               For multiple graders, names are separated with semicolons.
             - student: Student name
@@ -143,13 +148,13 @@ def wrangle(
 
     # Read in grade sheet
     # First ten columns are metadata: term, assignment, problem, points, 
-    # counts toward grade, subject 1, subject 2, subject 3, due date, grader
+    # counts toward grade, subject 1, subject 2, subject 3, due date, grader, lab
     with open(gradesheet, newline='') as f:
         reader = csv.reader(f, delimiter=',')
         row_count = 0
         iostr = ''
         for row in reader:
-            iostr += '\t'.join(row[:n_students+10]) + '\n'
+            iostr += '\t'.join(row[:n_students+11]) + '\n'
             row_count += 1
             if row_count == n_rows:
                 break
@@ -193,6 +198,7 @@ def wrangle(
             "subject 1",
             "subject 2",
             "subject 3",
+            "lab",
             "due date",
             "grader",
         ],
@@ -231,6 +237,11 @@ def wrangle(
     df = df.with_columns(
         pl.col('term', 'assignment', 'subject 1', 'subject 2', 'subject 3').str.replace_all(r"\s+", "")
     )
+
+    # Filter out students who are not included
+    if type(omit_students) == str:
+        omit_students = [omit_students]
+    df = df.filter(~pl.col('student').is_in(omit_students))
 
     # Convert to Pandas if desired
     if df_software == 'pandas':

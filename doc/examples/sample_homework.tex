@@ -1,0 +1,193 @@
+\documentclass{integrated_core_problems}
+    
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is where we define whether or not we will show the solutions
+% when we compile.  Use \excludecomment{answerkey} to hide solutions.
+\excludecomment{answerkey}
+\excludecomment{extracomment}
+\excludecomment{answerspaces}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\thesection}{2c}
+\setcounter{problem}{-1}
+\setcounter{solution}{0}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+\centerline{\textbf{Integrated Core, Winter 2026}}
+\centerline{\textbf{Homework 2c}}
+\centerline{Due at 11:59 PST, Friday, January 16, 2026}
+\reversemarginpar
+\marginparsep  0.1in
+\marginparwidth 0.7in
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{problem}[Time to completion, 0 points]
+\label{prob:time_to_completion}
+Write down how many hours you spent working on this problem set.
+\end{problem}
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{problem}[It's gonna rain, 20 points]
+    \label{prob:rain_cloud_distance}
+
+\noindent \textit{Subjects: Math, Physics.}
+
+\noindent You see a rain cloud in the distance. You look at it directly (at its bottom, which is about 1-2 km high) when you raise your eyes $20^\circ$ up. Estimate how far is the rain cloud from you. 
+
+    \noindent\begin{minipage}{\linewidth}% to keep image and caption on one page
+    \makebox[\linewidth]{%        to center the image
+    \includegraphics[width=0.75\linewidth]{/Users/bois/Library/CloudStorage/Box-Box/integrated_core/problem_bank/figs/cloud.png}}
+    \label{fig:cloud_angle}
+    \end{minipage}
+\end{problem}
+
+\begin{answerkey}
+  \begin{solution}
+    Using our right triangle, $\tan(20^\circ) = \text{height}/d$, and this gives our distance $d\approx 2.7 - 5.5$ km.
+  \end{solution}
+\end{answerkey}
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{problem}[Space curves and DNA, 70 points]
+  \label{prob:space_curves_and_dna}
+
+\noindent \textit{Subjects: Biology, Math.}
+
+\noindent Consider a piece of DNA wrapped around a histone. \textcolor{blue}{(To be added: Show a picture of a cylinder (histone), which DNA wrapped around it.)} We will approximately (but it's really not that unreasonable!) model the DNA as a space curve that goes around a circle about 1.75 times. To compute the energy of DNA wrapping, we need to invoke some of the mathematics of curves we have recently learned in class.
+
+\begin{itemize}
+  \item[a)] We define the position of the DNA strand in space at a distance $s$ along its arclength as $\mathbf{r}(s)$. The unit tangent vector to this curve at a distance $s$ along its arclength is
+  \begin{align}
+    \mathbf{t} = \frac{\displaystyle{\frac{\mathrm{d}\mathbf{r}}{\mathrm{d}s}}}{\displaystyle{\left\lVert\frac{\mathrm{d}\mathbf{r}}{\mathrm{d}s}\right\rVert}}.
+  \end{align}
+  Show that the derivative of the unit tangent vector of a space curve with respect to its arc length is orthogonal to the tangent of the curve. That is, show that $\mathrm{d}\mathbf{t}/\mathrm{d}s$ is orthogonal to $\mathbf{t}$.
+  %%
+  \item[b)] The magnitude of $\mathrm{d}\mathbf{t}/\mathrm{d}s$ is referred to as the curvature, often denoted as $\kappa$. That is,
+  \begin{align}
+    \kappa(s) = \left\lVert\frac{\mathrm{d}\mathbf{t}(s)}{\mathrm{d}s} \right\rVert. 
+  \end{align}
+  Why is this a reasonable name? What is the dimension of curvature (in the sense of what units would you use for curvature)?
+  %%
+  \item[c)] The bending energy of DNA is found by integrating the square of the curvature over the path length,
+  \begin{align}
+    E_\mathrm{bend} = \frac{K}{2}\int_0^\ell \mathrm{d}s\left(\kappa(s)\right)^2,
+  \end{align}
+  where $\ell$ is the total length of DNA wrapped around the histone. Here, $K$ is a parameter known as the flexural rigidity. The value of $K$ for DNA is about 200~pn-nm$^2$. In a histone, $\ell = 43$~nm of DNA is bent around a histone 8 nm in diameter. Compute the energy necessary to wrap DNA around the histone. Do not worry about significant figures; an approximate value is acceptable.
+\end{itemize}
+\end{problem}
+
+\begin{answerkey}
+  \begin{solution}
+    \begin{itemize}
+      \item[a)]
+      Because $\mathbf{t}$ is a unit vector, $\mathbf{t}\cdot \mathbf{t} = 1$, a constant. Therefore,
+      \begin{align}
+        \frac{\mathrm{d}\,\mathbf{t}\cdot\mathbf{t}}{\mathrm{d}s} = 0.
+      \end{align}
+      We can compute the above derivative using the chain rule.
+      \begin{align}
+        \frac{\mathrm{d}\,\mathbf{t}\cdot\mathbf{t}}{\mathrm{d}s} = 2\mathbf{t}\cdot\frac{\mathrm{d}\,\mathbf{t}}{\mathrm{d}s} = 0.
+      \end{align}
+      Because $\mathbf{t}$ is a unit vector, it is nonzero. So $\mathrm{d}\mathbf{t}/\mathrm{d}s$ must be orthogonal to $\mathbf{t}$, since its dot product with $\mathbf{t}$ is zero.
+      %%
+      \item[b)] If the tangent vector of a curve does not change over the length of the curve, the curve is straight. At the other extreme, if the tangent vector changes sharply, the curve is kinked. As such, the rate of change of the tangent vector, as computed from its derivative, is a measure of how rapidly the direction of the curve is changing, thereby giving a measure how how bent, or curved, it is. Hence the name, ``curvature.''
+      %%
+      \item[c)] First, we compute $\kappa(s)$ for a circle. For a circle or radius $R$, $\mathbf{r}(s) = (R\cos 2\pi s, R\sin 2\pi s)^\mathsf{T}$, such that
+      \begin{align}
+        \frac{\mathrm{d}\,\mathbf{r}}{\mathrm{d}s} = 2 \pi R \begin{pmatrix}
+          -\sin 2\pi s \\ \cos 2\pi s
+        \end{pmatrix}.
+      \end{align}
+      The squared magnitude is
+      \begin{align}
+        \left\lVert\frac{\mathrm{d}\,\mathbf{r}}{\mathrm{d}s}\right\rVert^2 &= 4 \pi^2 R^2 \left\lVert\begin{pmatrix}
+          -\sin 2\pi s \\ \cos 2\pi s
+        \end{pmatrix}\right\rVert \nonumber \\
+        &= 4 \pi^2 R^2 \left(\sin^2 2\pi s + \cos^2 2\pi s\right) \nonumber \\
+        &= 4\pi^2 R^2,
+      \end{align}
+      such that the unit tanget vector for a circle is
+      \begin{align}
+        \mathbf{t}(s) = \frac{1}{2\pi R}\begin{pmatrix}
+          -\sin 2\pi s \\ \cos 2\pi s
+        \end{pmatrix}.
+      \end{align}
+      Now, differentiating the unit tangent by $s$ gives the curvature,
+      \begin{align}
+        \kappa &= \left\lVert\frac{\mathrm{d}\mathbf{t}}{\mathrm{d}s}\right\rVert \nonumber \\
+         &= \frac{1}{2\pi R}\left\lVert \frac{\mathrm{d}}{\mathrm{d}s}\begin{pmatrix}
+          -\sin 2\pi s \\ \cos 2\pi s
+        \end{pmatrix}\right\rVert \nonumber \\
+        &= \frac{1}{2\pi R}\left\lVert 2\pi \,\frac{\mathrm{d}}{\mathrm{d}s}\begin{pmatrix}
+          -\cos 2\pi s \\ \sin 2\pi s
+        \end{pmatrix}\right\rVert \nonumber \\
+        &= \frac{1}{R}.
+      \end{align}
+      So, the curvature for a circle is constant and is the inverse of its radius. The bending energy is then
+      \begin{align}
+        E_\mathrm{bend} = \frac{K}{2}\int_0^\ell \mathrm{d}s\, \kappa^2 = \frac{K\ell}{2R^2}.
+      \end{align}
+      For DNA wrapping a histone, $K \approx 200$~pn-nm$^2$, $\ell = 43$~nm, and $R \approx 4$~nm, giving a bending energy of about 275 pN-nm, which is quite a bit more than the thermal energy ($k_BT \approx 4.1$~pN-nm), amounting to about three or four ATPs.
+    \end{itemize}
+  \end{solution}
+\end{answerkey}
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{problem}[Eigenvalues of $\mathsf{A}^\mathsf{T}\mathsf{A}$, 10 points]
+\label{prob:eigenvalues_of_ATA}
+% author: bois, justin
+
+\noindent \textit{Subject: Math.}
+
+\noindent Let $\mathsf{A}$ be an $m\times n$ real matrix.
+
+\begin{itemize}
+    \item[a)] Show that $\mathsf{A}^\mathsf{T}\mathsf{A}$ is real and symmetric, as is $\mathsf{A}\mathsf{A}^\mathsf{T}$.
+    %%
+    \item[b)] Show that $\mathsf{A}^\mathsf{T}\mathsf{A}$ and $\mathsf{A}\mathsf{A}^\mathsf{T}$ are both positive semidefinite. 
+    % You may use what you may have derived in another homework:
+    % \begin{itemize}
+    %     \item Any real symmetric matrix has real eigenvalues.
+    %     \item Any two eigenvectors corresponding to distinct eigenvalues of a real symmetric matrix are orthogonal.
+    % \end{itemize}
+    %%
+    \item[c)] Show that if $\lambda$ is a positive eigenvalue of $\mathsf{A}^\mathsf{T}\mathsf{A}$ with corresponding eigenvector $\mathbf{v}$, then $\lambda$ is also an eigenvalue of $\mathsf{A}\mathsf{A}^\mathsf{T}$ and the corresponding eigenvector is $\mathsf{A}\mathbf{v}$.
+\end{itemize}
+
+\end{problem}
+
+
+\begin{answerkey}
+\begin{solution}
+\begin{itemize}
+    \item[a)] $(\mathsf{A}^\mathsf{T}\mathsf{A})^\mathsf{T} = \mathsf{A}^\mathsf{T}(\mathsf{A}^\mathsf{T})^\mathsf{T} = \mathsf{A}^\mathsf{T}\mathsf{A}$,
+    so the transpose of $\mathsf{A}^\mathsf{T}\mathsf{A}$ is equal to itself, so $\mathsf{A}^\mathsf{T}\mathsf{A}$ is symmetric. The same is true for $\mathsf{A}\mathsf{A}^\mathsf{T}$, since $(\mathsf{A}\mathsf{A}^\mathsf{T})^\mathsf{T} = (\mathsf{A}^\mathsf{T})^\mathsf{T}\mathsf{A}^\mathsf{T} = \mathsf{A}\mathsf{A}^\mathsf{T}$. Because $\mathsf{A}$ is real, so too are these two matrices constructed from it.
+    %%
+    \item[b)] Because for arbitrary $\mathbf{x}$, $\mathbf{x}^\mathsf{T}\mathsf{A}^\mathsf{T}\mathsf{A}\mathbf{x} = (\mathsf{A}\mathbf{x})^\mathsf{T}\mathsf{A}\mathbf{x} = \lVert \mathsf{A}\mathbf{x} \rVert^2 \ge 0$, $\mathsf{A}^\mathsf{T}\mathsf{A}$ is positive semidefinite. Similarly, $\mathbf{x}^\mathsf{T}\mathsf{A}\mathsf{A}^\mathsf{T}\mathbf{x} = (\mathsf{A}^\mathsf{T}\mathbf{x})^\mathsf{T}\mathsf{A}^\mathsf{T}\mathbf{x} = \lVert \mathsf{A}^\mathsf{T}\mathbf{x} \rVert^2 \ge 0$, so $\mathsf{A}\mathsf{A}^\mathsf{T}$ is also positive semidefinite.
+    %%
+    \item[c)] Because $\lambda$ and $\mathbf{v}$ are an eigenvalue/eigenvector pair for $\mathsf{A}^\mathsf{T}\mathsf{A}$, $\mathsf{A}^\mathsf{T}\mathsf{A} \mathbf{v} = \lambda \mathbf{v}$. Multiplying by $\mathsf{A}$ yields
+    \begin{align}
+        \mathsf{A}\mathsf{A}^\mathsf{T}\mathsf{A} \mathbf{v} = \lambda \mathsf{A}\mathbf{v}.
+    \end{align}
+    Let us now cleverly place parentheses.
+    \begin{align}
+        (\mathsf{A}\mathsf{A}^\mathsf{T})(\mathsf{A} \mathbf{v}) = \lambda (\mathsf{A}\mathbf{v}).
+    \end{align}
+    The above equation makes clear that $\mathsf{A}\mathbf{v}$ is an eigenvector of $\mathsf{A}\mathsf{A}^\mathsf{T}$, and its corresponding eigenvalue is $\lambda$.
+\end{itemize}
+
+\end{solution}
+\end{answerkey}
+
+\end{document}

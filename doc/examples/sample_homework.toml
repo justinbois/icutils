@@ -9,7 +9,14 @@ include_time_to_completion_problem = true
 [[problem]]
 name = 'rain_cloud_distance'
 points = 20
+subjects = ['math', 'physics']
 
 [[problem]]
 name = 'space_curves_and_dna'
-points = 80
+points = 70
+subjects = ['biology', 'math']
+
+[[problem]]
+name = 'eigenvalues_of_ATA'
+points = 10
+subjects = ['math']

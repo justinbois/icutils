@@ -20,6 +20,7 @@ def subject_scores(
     rfp_weight: typing.Union[float, int] = 0.0,
     engagement_weight: typing.Union[float, int] = 0.2,
     engagement_weeks: int = 10,
+    score_ceiling: float = 1.0,
 ):
     """
     Compute a table of student scores in a subject for a term.
@@ -50,7 +51,11 @@ def subject_scores(
         Weight to assign engagement percentage in final grade.
     engagement_weeks : int, default 10
         Number of weeks to consider in engagement score.
-
+    score_ceiling : float, default 1.0
+        Maximum score on any category (homework, final, etc.). If extra 
+        credit brings the score above this level, the reported score
+        `score_ceiling`.
+        
     Returns
     -------
     output : Polars or Pandas data frame
@@ -139,7 +144,10 @@ def subject_scores(
     )
 
     percent_calculator = (
-        (pl.col("score") * pl.col("late_multiplier")).sum() / pl.col("points").sum()
+        pl.min_horizontal(
+            (pl.col("score") * pl.col("late_multiplier")).sum() / pl.col("points").sum(),
+            score_ceiling
+        )
     )
 
     total_weight = (
@@ -164,6 +172,70 @@ def subject_scores(
         .agg(percent_calculator)
         .pivot(on='assignment_type', values='score')
         .with_columns((score_calculator).alias('total'))
+        .sort(by='student')
+    )
+
+    if input_format == 'pandas':
+        return df_out.to_pandas()
+    
+    return df_out
+
+
+def lab_scores(
+    df: typing.Union[pd.DataFrame, pl.DataFrame],
+    term: typing.Literal['fall', 'winter', 'spring', 'summer'],
+    score_ceiling: float = 1.0,
+):
+    """
+    Compute a table of student scores lab assignments for a term.
+
+    Parameters
+    ----------
+    df : Polars or Pandas DataFrame
+        Data frame acquired using `icgrade.wrangle()`.
+    term : str, one of 'fall', 'winter', 'spring', or 'summer'
+        Term of the assignment
+    score_ceiling : float, default 1.0
+        Maximum score on any category (homework, final, etc.). If extra 
+        credit brings the score above this level, the reported score
+        `score_ceiling`.
+        
+    Returns
+    -------
+    output : Polars or Pandas data frame
+        Data frame containing total lab percentages for the term. Each row
+        corresponds to a single student's score.
+    """
+    if type(df) == pd.core.frame.DataFrame:
+        input_format = 'pandas'
+        df = pl.from_pandas(df)
+    else:
+        input_format = 'polars'
+    
+    if term not in ('fall', 'winter', 'spring', 'summer'):
+        raise RuntimeError(
+            "`term` must be  one of 'fall', 'winter', 'spring', or 'summer'."
+        )
+
+    filter_conditions = (
+        (pl.col('term') == term)
+        & (pl.col('counts toward grade'))
+        & (pl.col('lab'))
+    )
+
+    percent_calculator = (
+        pl.min_horizontal(
+            (pl.col("score") * pl.col("late_multiplier")).sum() / pl.col("points").sum(),
+            score_ceiling
+        )
+    )
+
+
+    df_out = (
+        df
+        .filter(filter_conditions)
+        .group_by('student', maintain_order=True)
+        .agg(percent_calculator)
         .sort(by='student')
     )
 
@@ -224,24 +296,25 @@ def assignment_dashboard(
         .select(pl.col('problem', 'score', 'points', 'student'))
         .with_columns(
             pl.col('problem').cast(str),
-            pl.format("{} / {}", pl.col("score").cast(int), pl.col("points")).alias("score_string")
+            pl.format("{} / {}", pl.col("score"), pl.col("points")).alias("score_string")
         )
     )
 
     # Get total score
     df_total = (
         df
-        .select(pl.col('student', 'score'))
+        .select(pl.col('student', 'score', 'points'))
         .group_by('student')
         .sum()
         .sort(by=['score', 'student'], descending=True)
     )
+    
     df_total = df_total.with_columns(
         pl.lit('total').alias('problem'),
-        pl.lit(100).alias('points')
+        # pl.lit(100).alias('points')
     )
     df_total = df_total.with_columns(
-        pl.format("{}/{}", pl.col("score").cast(int), pl.col("points")).alias("score_string")
+        pl.format("{}/{}", pl.col("score"), pl.col("points")).alias("score_string")
     )
 
     df = pl.concat((df, df_total), how='diagonal_relaxed')

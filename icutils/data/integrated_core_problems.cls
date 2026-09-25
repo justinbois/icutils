@@ -29,6 +29,9 @@
 \titleformat*{\subsection}{\large\sffamily}
 \titleformat*{\subsubsection}{\large\sffamily}
 
+% Need to require xcolor before nicematrix, tikz, etc.
+\RequirePackage[table]{xcolor}
+
 % Misc
 \RequirePackage{setspace}
 \RequirePackage{siunitx}
@@ -37,6 +40,7 @@
 \RequirePackage{url}
 \RequirePackage{color}
 \RequirePackage{threeparttable}
+\RequirePackage{nicematrix}
 \RequirePackage{booktabs}
 \RequirePackage{array}
 \RequirePackage{makecell}

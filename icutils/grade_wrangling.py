@@ -14,6 +14,7 @@ def wrangle(
     df_software: str = 'polars',
     n_students: typing.Optional[int] = None,
     n_rows: typing.Optional[int] = None,
+    infer_schema_length: int = 10_000,
     omit_students: typing.Optional[typing.Union[str, typing.List[str], typing.Tuple[str, ...]]] = None,
 ) -> typing.Union[pd.DataFrame, pl.DataFrame]:
     """Wrangle grading data into tall tidy format.
@@ -52,7 +53,9 @@ def wrangle(
         have added spurious rows to the gradesheet to do in-Google-
         Docs analysis, this will fail, possibly silently, unless 
         n_rows is explicitly set.
-    omit_student : list of str
+    infer_schema_length : int, default 10_000
+        How many lines to use for Polars to infer the schema.
+    omit_students : list of str
         List of students to be omitted from the analysis.
 
     Returns
@@ -124,7 +127,7 @@ def wrangle(
 
     # Read in late multiplier and get the number of students
     if n_students is None:
-        df_late = pl.read_csv(late_multiplier)
+        df_late = pl.read_csv(late_multiplier, infer_schema_length=infer_schema_length)
         n_students = df_late.width - 2
     else:
         with open(late_multiplier, newline='') as f:
@@ -134,7 +137,7 @@ def wrangle(
                 # First two columns are term, assignment
                 iostr += '\t'.join(row[:n_students + 2]) + '\n'
 
-        df_late = pl.read_csv(io.StringIO(iostr), separator='\t')
+        df_late = pl.read_csv(io.StringIO(iostr), separator='\t', infer_schema_length=infer_schema_length)
 
     # Read in enagement
     with open(engagement, newline='') as f:
@@ -144,7 +147,7 @@ def wrangle(
             # First three columns are term, assignment, points
             iostr += '\t'.join(row[:n_students + 3]) + '\n'
     
-    df_engagement = pl.read_csv(io.StringIO(iostr), separator='\t')
+    df_engagement = pl.read_csv(io.StringIO(iostr), separator='\t', infer_schema_length=infer_schema_length)
 
     # Read in grade sheet
     # First ten columns are metadata: term, assignment, problem, points, 
@@ -163,7 +166,8 @@ def wrangle(
         io.StringIO(iostr), 
         separator='\t', 
         null_values=["null", "Null"], 
-        try_parse_dates=True
+        try_parse_dates=True,
+        infer_schema_length=infer_schema_length
     )
 
     # Add a column for assignment type
@@ -234,6 +238,15 @@ def wrangle(
         pl.col("subject 2").str.to_lowercase(),
         pl.col("subject 3").str.to_lowercase(),
     )
+
+    # Convert lab column to bools if necessary (earlier versions of Polars require this)
+    if df['lab'].dtype != pl.Boolean:
+        df = df.with_columns(
+            pl.when(pl.col("lab") == "TRUE").then(True)
+            .when(pl.col("lab") == "FALSE").then(False)
+            .otherwise(pl.lit(None, dtype=pl.Boolean))
+            .alias("lab")
+        )
 
     # Eliminate all spaces from entries in term, assignment, and subject fields
     df = df.with_columns(

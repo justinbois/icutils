@@ -30,15 +30,16 @@ Toward that end, download and install \href{https://www.box.com/resources/downlo
 
 A few notes on using Box Drive:
 \begin{itemize}
+\item It is really important that you not install the \texttt{icutils} package in any directory that is synched with Box. Install it separately and locally on your machine. Box has a problem with shared folders containing hidden folders related to software installations (like \verb|.pixi/|), and this will wreak havoc on everyone's synching. (There is currently no way to tell Box what to ignore, despite this apparently being an oft requested feature.)
 \item The Integrated Code materials are in a folder called \verb|integrated_code/|. If you do not have editor access to this shared folder, please let JB know.
 \item When you install Box Drive, all of the Box folders you share, including the \verb|integrated_code/| folder, are available on your own machine. They may be in a strange location, though. On a Mac, the location is\\\verb|~/Library/CloudStorage/Box-Box|. I find this annoying, especially when using the terminal. You may want to create a symbolic link from your home directory so that it is available within the directories your normally visit in your workflows. To do this, I did the following on the command line:\\\\
 \verb|    cd; ln -s ~/Library/CloudStorage/Box-Box Box|
 \item I highly recommend making the \verb|integrated_code/| folder available offline. To do so on a Mac, navigate to the Box location using Finder on your local machine, right click the folder, and select ``Make Available Offline.''
-\item lease do not use spaces or parentheses in your file names. This will help keep things clean across different operating systems and is generally good practice.
+\item Please do not use spaces or parentheses in your file names. This will help keep things clean across different operating systems and is generally good practice.
 \end{itemize}
 
 \subsection{Box has problems}
-I generally have not been pleased with Box's synching. It is laggy and leads to massive headaches when software is shared within the folder (leading to version clashes, etc.). I much prefer Dropbox. Dropbox, however, is not provided by Caltech and is not FERPA compliant. As a result, we will be using Box for the near future at least.
+I generally have not been pleased with Box's synching. It is laggy and leads to massive headaches when software is shared within the folder (leading to version clashes, etc.). The lack of ability to ignore things like a \verb|.pixi/| directory and the resulting dire consequences is maddening. I much prefer Dropbox. Dropbox, however, is not provided by Caltech and is not FERPA compliant. As a result, we will be using Box for the near future at least.
 
 \pagebreak
 

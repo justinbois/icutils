@@ -112,7 +112,7 @@ def copy_cls(texmfhome=None, overwrite=False) -> None:
         shutil.copy2(cls, target)
 
 
-def pdfproblem(problem, problem_bank_path, overwrite=True, compiler='pdflatex'):
+def pdfproblem(problem, problem_bank_path, overwrite=True, compiler='pdflatex', force_copy_cls=False):
     """Compile a single problem to a PDF document."""
     # Just problem name, not .tex
     if problem.endswith(".tex"):
@@ -120,7 +120,7 @@ def pdfproblem(problem, problem_bank_path, overwrite=True, compiler='pdflatex'):
 
     # Make sure IC problems class is loaded
     print("Verifying TeX tools...")
-    copy_cls(texmfhome=None, overwrite=False)
+    copy_cls(texmfhome=None, overwrite=force_copy_cls)
 
     # Convert problem bank path to pathlib object
     problem_bank_path = pathlib.Path(problem_bank_path).expanduser().resolve()
@@ -250,10 +250,10 @@ def _add_points(problem_text, points):
     return problem_text[:idx] + f', {points} points]' + problem_text[idx+1:]
 
 
-def _add_subjects(problem_text, subjects):
-    """Add subjects to problem text.
+def _add_subjects(problem_text, subjects, additional_comments=None):
+    """Add subjects and/or additional comments to problem text.
     """
-    if subjects is None or len(subjects) == 0:
+    if (subjects is None or len(subjects) == 0) and not additional_comments:
         return problem_text
 
     start = problem_text.find(r"\begin{problem}")
@@ -279,23 +279,32 @@ def _add_subjects(problem_text, subjects):
         else:
             break
 
-    subjects = [s.capitalize() for s in subjects]
+    insert_text = "\n"
 
-    if len(subjects) == 1:
-        subjects_text = "\n" + r"\noindent \textit{Subject: "
-        subjects_text += subjects[0] + '.'
-        subjects_text += r"}" + "\n\n" + r"\noindent "
-    else:
-        subjects_text = "\n" + r"\noindent \textit{Subjects: "
-        for subject in subjects[:-1]:
-            subjects_text += subject + ", "
-        subjects_text += subjects[-1] + '.'
-        subjects_text += r"}" + "\n\n" + r"\noindent "
+    if subjects is not None and len(subjects) > 0:
+        subjects = [s.capitalize() for s in subjects]
 
-    return problem_text[:pos] + subjects_text + problem_text[pos:].lstrip()
+        if len(subjects) == 1:
+            insert_text += r"\noindent \textit{Subject: "
+            insert_text += subjects[0] + '.'
+            insert_text += r"}\par\nopagebreak" + "\n"
+        else:
+            insert_text += r"\noindent \textit{Subjects: "
+            for subject in subjects[:-1]:
+                insert_text += subject + ", "
+            insert_text += subjects[-1] + '.'
+            insert_text += r"}\par\nopagebreak" + "\n"
+
+    if additional_comments:
+        insert_text += r"\noindent \textit{" + additional_comments
+        insert_text += r"}\par\nopagebreak" + "\n"
+
+    insert_text += r"\noindent "
+
+    return problem_text[:pos] + insert_text + problem_text[pos:].lstrip()
 
 
-def pdfset(toml_spec, problem_bank_path, overwrite=True, compiler='pdflatex'):
+def pdfset(toml_spec, problem_bank_path, overwrite=True, compiler='pdflatex', force_copy_cls=False):
     """Compile problems in a TOML specification into a PDF document."""
     # Infer .toml suffix if not given
     toml_spec = pathlib.Path(toml_spec)
@@ -314,7 +323,7 @@ def pdfset(toml_spec, problem_bank_path, overwrite=True, compiler='pdflatex'):
 
     # Make sure IC problems class is loaded
     print("Verifying TeX tools...")
-    copy_cls(texmfhome=None, overwrite=False)
+    copy_cls(texmfhome=None, overwrite=force_copy_cls)
 
     # Convert problem bank path to pathlib object
     problem_bank_path = pathlib.Path(problem_bank_path).expanduser().resolve()
@@ -395,8 +404,8 @@ Write down how many hours you spent working on this problem set.
         # Put in the point total
         prob_text = _add_points(prob_text, int(prob['points']))
 
-        # Put in the subjects
-        prob_text = _add_subjects(prob_text, prob.get('subjects', []))
+        # Put in the subjects and additional comments
+        prob_text = _add_subjects(prob_text, prob.get('subjects', []), prob.get('additional_comments'))
 
         # Add the problem text to the main document text
         problems_text += "\n\n% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"

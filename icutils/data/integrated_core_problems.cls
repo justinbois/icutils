@@ -22,6 +22,7 @@
 \RequirePackage{textgreek}
 \RequirePackage[version=4]{mhchem}
 \RequirePackage{amsthm}
+\RequirePackage{bm}
 
 % Formatting / section titles
 \RequirePackage{titlesec}
@@ -100,6 +101,10 @@
 
 \theoremstyle{break}
 \newtheorem{problem}{Problem}
+
+% Keep problem heading (and subjects line) with the start of the problem text
+\RequirePackage{needspace}
+\AddToHook{env/problem/before}{\needspace{6\baselineskip}}
 
 % Counters used by boxed envs
 \newcounter{solution}

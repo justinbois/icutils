@@ -24,22 +24,24 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Using Box}
 
-It will greatly facilitate use of shared materials if you synch the Integrated Core Box account to your local machine. By having Box synched, you will always get all updated files from course staff and your updates will quickly be uploaded and shared on everyone else's machines.
+It will greatly facilitate use of shared materials if you sync the Integrated Core Box account to your local machine. By having Box synced, you will always get all updated files from course staff and your updates will quickly be uploaded and shared on everyone else's machines.
 
-Toward that end, download and install \href{https://www.box.com/resources/downloads}{Box Drive}. This allows your local file system to sync to the cloud so that we can more easily collaborate. You might want to check out the \href{https://support.box.com/hc/en-us/articles/360043697494-Using-Box-Drive-Basics}{documentation}. Do \textbf{not} install Box Sync. That is older, deprecated software that can clash with Box Drive to detrimental effect.
+Toward that end, download and install \href{https://www.box.com/resources/downloads}{Box Drive}. (Sorry, it is not available for Linux!) This allows your local file system to sync to the cloud so that we can more easily collaborate. You might want to check out the \href{https://support.box.com/hc/en-us/articles/360043697494-Using-Box-Drive-Basics}{documentation}. Do \textbf{not} install Box Sync. That is older, deprecated software that can clash with Box Drive with detrimental effects.
 
 A few notes on using Box Drive:
 \begin{itemize}
-\item It is really important that you not install the \texttt{icutils} package in any directory that is synched with Box. Install it separately and locally on your machine. Box has a problem with shared folders containing hidden folders related to software installations (like \verb|.pixi/|), and this will wreak havoc on everyone's synching. (There is currently no way to tell Box what to ignore, despite this apparently being an oft requested feature.)
-\item The Integrated Code materials are in a folder called \verb|integrated_code/|. If you do not have editor access to this shared folder, please let JB know.
-\item When you install Box Drive, all of the Box folders you share, including the \verb|integrated_code/| folder, are available on your own machine. They may be in a strange location, though. On a Mac, the location is\\\verb|~/Library/CloudStorage/Box-Box|. I find this annoying, especially when using the terminal. You may want to create a symbolic link from your home directory so that it is available within the directories your normally visit in your workflows. To do this, I did the following on the command line:\\\\
-\verb|    cd; ln -s ~/Library/CloudStorage/Box-Box Box|
-\item I highly recommend making the \verb|integrated_code/| folder available offline. To do so on a Mac, navigate to the Box location using Finder on your local machine, right click the folder, and select ``Make Available Offline.''
+\item It is really important that you not install the \texttt{icutils} package in any directory that is synced with Box. Install it separately and locally on your machine. Box has a problem with shared folders containing hidden folders related to software installations (like \verb|.pixi/|), and this will wreak havoc on everyone's syncing. (There is currently no way to tell Box what to ignore, despite this apparently being an oft-requested feature.)
+\item The Integrated Core materials are in a folder called \verb|integrated_core/|. If you do not have editor access to this shared folder, please let JB know.
+\item When you install Box Drive, all of the Box folders you share, including the \verb|integrated_core/| folder, are available on your own machine. They may be in a strange location, though. On a Mac, the location is\\\verb|~/Library/CloudStorage/Box-Box|. I find this annoying, especially when using the terminal. You may want to create a symbolic link from your home directory so that it is available within the directories you normally visit in your workflows. To do this, I did the following on the command line:\\\\
+\verb|    cd; ln -s ~/Library/CloudStorage/Box-Box Box|\\\\
+On Windows, Box Drive places your Box folder at \verb|C:\Users\<username>\Box|, which is already in your home directory, so no symbolic link is needed. If you do want a link elsewhere, open Command Prompt as administrator and run (adjusting the paths)\\\\
+\verb|mklink /D C:\Users\<username>\Documents\Box C:\Users\<username>\Box|
+\item I highly recommend making the \verb|integrated_core/| folder available offline. To do so on a Mac, navigate to the Box location using Finder on your local machine, right click the folder, and select ``Make Available Offline.'' On Windows, open the Box folder in File Explorer, right click the folder (on Windows 11, you may need to choose ``Show more options'' first), and select ``Box'' $\to$ ``Make Available Offline.''
 \item Please do not use spaces or parentheses in your file names. This will help keep things clean across different operating systems and is generally good practice.
 \end{itemize}
 
 \subsection{Box has problems}
-I generally have not been pleased with Box's synching. It is laggy and leads to massive headaches when software is shared within the folder (leading to version clashes, etc.). The lack of ability to ignore things like a \verb|.pixi/| directory and the resulting dire consequences is maddening. I much prefer Dropbox. Dropbox, however, is not provided by Caltech and is not FERPA compliant. As a result, we will be using Box for the near future at least.
+I generally have not been pleased with Box's syncing. First of all, there is no Box Drive for Linux. When installed on MacOS or Windows, it is laggy and leads to massive headaches when software is shared within the folder (leading to version clashes, etc.). The lack of ability to ignore things like a \verb|.pixi/| directory and the resulting dire consequences is maddening. I much prefer Dropbox. Dropbox, however, is not provided by Caltech and is not FERPA compliant unless you pay for the institutional enterprise versions. As a result, we will be using Box for the near future at least.
 
 \pagebreak
 
@@ -53,11 +55,17 @@ The \texttt{icutils} package has utilities for building problem sets and running
   cd icutils
   pixi install
 \end{verbatim}
-  If you do use a Pixi environment, make sure it is activated before using \texttt{icutils}.
+  If you do use a Pixi environment, make sure it is activated using \texttt{pixi shell} on the command line before using \texttt{icutils}.
 \end{itemize}
 
 \subsection{Configuring the problem bank path}
 I recommend setting the \verb|ICPROBLEMBANKPATH| environment variable to point to the location of \verb|integrated_core/problem_bank/| on your machine. Alternatively, you can specify the problem bank path when you compile the documents as described in the following sections.
+
+\subsection{The Integrated Core LaTeX class}
+Problems and problem sets are typeset using the \verb|integrated_core_problems.cls| class file, which ships with \texttt{icutils}. You need a working TeX installation (so that \verb|kpsewhich| is on your path), but you do not need to install the class file yourself. The first time you run \verb|icutils pdfproblem| or \verb|icutils pdfset|, the class file is automatically copied to \verb|tex/latex/integrated_core_classes/| in your \verb|TEXMFHOME| directory, which is created if it does not exist.
+
+If the class file is already there, it is not replaced. So, if \texttt{icutils} is updated such that class file has changed, force the copy on your next compilation by adding the \verb|--copy-cls| flag, which overwrites the existing copy.\\\\
+\verb|  icutils pdfproblem my_problem --copy-cls|
 
 
 \pagebreak
@@ -65,17 +73,17 @@ I recommend setting the \verb|ICPROBLEMBANKPATH| environment variable to point t
 \section{Adding a problem to the problem bank}
 The problem bank is in the \verb|integrated_core/problem_bank/| directory. The easiest way to add a problem to the problem bank is to make a copy of the \verb|_template.tex| file and write your problem in the \verb|.tex| file. The template should be self-explanatory to use, but it is important to note:
 \begin{itemize}
-  \item Any figure you include needs to be stored in the \verb|integrated_core/problem_bank/figs/| directory. When referring to is in the TeX document of your problem, refer to it as \verb|figs/name_of_figure_file.pdf|.
+  \item Any figure you include needs to be stored in the \verb|integrated_core/problem_bank/figs/| directory. When referring to it in the TeX document of your problem, refer to it as \verb|figs/name_of_figure_file.pdf|.
   \item Your problem must be stored in the \verb|integrated_core/problem_bank/| directory.
   \item Follow the template. Note that there are no \verb|\begin{document}|, \verb|\usepackage|, etc. statements. This is all taken care of automatically when using \texttt{icutils} to build your PDFs.
   \item Be sure to name your problem file with a descriptive name, all lowercase, with words separated by underscores. (The template file begins with an underscore so it is always at the top of the list of files in the problem bank for easy access.)
 \end{itemize}
 
-\subsection{Add your problem to the manifest}
-After you have created your problem, add it to the \verb|problem_bank_manifest| sheet of the master spreadsheet for Integrated Core.
+% \subsection{Add your problem to the manifest}
+% After you have created your problem, add it to the \verb|problem_bank_manifest| sheet of the master spreadsheet for Integrated Core.
 
 \subsection{Viewing your problem}
-To make a PDF of your problem, use \texttt{icutils}'s \texttt{pdfproblem} functionality. If your problem is in the problem bank in a file \verb|my_problem.tex|, you can build a PDF of the problem from any directly (preferably \textit{not} the problem bank directory so as not to litter it with compiled PDF files) as follows on the command line.\\\\
+To make a PDF of your problem, use \texttt{icutils}'s \texttt{pdfproblem} functionality. If your problem is in the problem bank in a file \verb|my_problem.tex|, you can build a PDF of the problem from any directory (preferably \textit{not} the problem bank directory so as not to litter it with compiled PDF files) as follows on the command line.\\\\
 \verb|  icutils pdfproblem my_problem|\\\\
 This will only work if you have specified the \verb|ICPROBLEMBANKPATH| environment variable. You can alternatively do the following (using whatever your path to the problem bank is).\\\\
 {\footnotesize \verb|  icutils pdfproblem my_problem --problem-bank-path ~/Box/integrated_core/problem_bank|}
@@ -117,9 +125,9 @@ To compile the problem set, use the \verb|pdfset| functionality of \verb|icutils
 {\footnotesize \verb|  icutils pdfset sample_homework --problem-bank-path ~/Box/integrated_core/problem_bank|}\\\\
 You will not need the last flag if you have set the \verb|ICPROBLEMBANKPATH| environment variable.
 
-You will then have \verb|sample_homework.pdf| and \verb|sample_homework_solution.pdf|. You will also have a \verb|sample_homework.tex| file that is a \texttt{.tex} file for generating the homework.
+You will then have \verb|sample_homework.pdf| and \verb|sample_homework_solution.pdf|. You will also have a \verb|sample_homework.tex| file that is a \texttt{.tex} source file the homework.
 
-The resulting homework is included at the end of this document.
+The resulting homework solution is included at the end of this document.
 
 \pagebreak
 

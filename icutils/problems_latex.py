@@ -206,8 +206,24 @@ def pdfproblem(problem, problem_bank_path, overwrite=True, compiler='pdflatex', 
 
 def check_hw_spec(spec):
     """Checks a homework specification for all fields."""
+    header_keys = ['course', 'term', 'year', 'number', 'due_time']
+
+    if 'alt_title' in spec.keys():
+        # Alternative title overrides the standard header fields
+        # 'number' is not ignored; it is still used for problem numbering
+        ignored = [key for key in header_keys if key != 'number' and key in spec.keys()]
+        if len(ignored) > 0:
+            warnings.warn(
+                "'alt_title' is present, so the following fields are ignored: "
+                + ", ".join(f"'{key}'" for key in ignored) + ".",
+                UserWarning,
+            )
+        required_keys = ['problem']
+    else:
+        required_keys = header_keys + ['problem']
+
     # Necessary fields for header
-    for key in ['course', 'term', 'year', 'number', 'due_time', 'problem']:
+    for key in required_keys:
         if key not in spec.keys():
             raise RuntimeError(f"'{key}' field not in specification.")
 
@@ -354,14 +370,23 @@ def pdfset(toml_spec, problem_bank_path, overwrite=True, compiler='pdflatex', fo
 \\setcounter{solution}{0}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-""".replace("{\\thesection}{0}", "{\\thesection}{" + str(spec['number']) + "}")
-    
+"""
+
+    # Number (e.g., 5 or "r") sets problem numbering; optional with alt_title
+    if 'number' in spec.keys():
+        preamble_text = preamble_text.replace("{\\thesection}{0}", "{\\thesection}{" + str(spec['number']) + "}")
+
     if include_time_to_completion_problem:
         preamble_text = preamble_text.replace('\\setcounter{problem}{0}', '\\setcounter{problem}{-1}')
 
-    preamble_text += f"\\centerline{{\\textbf{{{spec['course']}, {spec['term'].capitalize()} {spec['year']}}}}}\n"
-    preamble_text += f"\\centerline{{\\textbf{{Homework {spec['number']}}}}}\n"
-    preamble_text += f"\\centerline{{Due at {spec['due_time']}}}\n"
+    if 'alt_title' in spec.keys():
+        # Each line of the alternative title is bold and centered
+        for line in str(spec['alt_title']).strip().splitlines():
+            preamble_text += f"\\centerline{{\\textbf{{{line.strip()}}}}}\n"
+    else:
+        preamble_text += f"\\centerline{{\\textbf{{{spec['course']}, {spec['term'].capitalize()} {spec['year']}}}}}\n"
+        preamble_text += f"\\centerline{{\\textbf{{Homework {spec['number']}}}}}\n"
+        preamble_text += f"\\centerline{{Due at {spec['due_time']}}}\n"
     preamble_text += "\\reversemarginpar\n\\marginparsep  0.1in\n\\marginparwidth 0.7in\n\n"
     preamble_text += "% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n"
 
